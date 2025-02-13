@@ -8,6 +8,7 @@ import java.util.Scanner;
 // see also: https://en.wikipedia.org/wiki/Piano_key_frequencies
 
 // TODO features:
+// TODO set up maven releases
 // TODO add support for posix OSs
 // TODO convert to java sound api (parsing won't need to change)
 // TODO make duration changeable
