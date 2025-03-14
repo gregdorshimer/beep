@@ -9,8 +9,7 @@ import java.util.Scanner;
 
 // TODO features:
 // TODO set up maven releases
-// TODO add support for posix OSs
-// TODO convert to java sound api (parsing won't need to change)
+// TODO convert to java sound api (parsing won't need to change) (will allow use on Posix OSs)
 // TODO make duration changeable
 // TODO create a class that represents a piece of music--a list of notes with a tempo
 
@@ -22,8 +21,8 @@ public class Main {
     public interface Kernel32 extends Library {
         // FREQUENCY is expressed in hertz and ranges from 37 to 32767
         // DURATION is expressed in milliseconds
-        public boolean Beep(int FREQUENCY, int DURATION);
-        public void Sleep(int DURATION);
+        boolean Beep(int FREQUENCY, int DURATION);
+//        void Sleep(int DURATION);
     }
 
     private static void printInfoText() {
@@ -32,8 +31,8 @@ public class Main {
                         "Notes are a letter [A, G], a modifier [#, b, <none>], and an octave [0, 8], with no spaces.\n" +
                         "Multiple notes are separated by spaces.\n" +
                         "Notation represents keys on a standard 88-key piano.\n" +
-                        "The lowest note is A0, and the highest, C8, with C being the lowest now in an octave (i.e. A0, B0, C1, D1...).\n" +
-                        "Press 'q' to quit.";
+                        "The lowest note is A0, and the highest, C8, with C being the lowest note in an octave (i.e. A0, B0, C1, D1...).\n" +
+                        "Enter 'q' to quit.";
 
         System.out.println(INFO_TEXT);
     }
@@ -64,15 +63,16 @@ public class Main {
     }
 
     public static void main(String[] args) {
-//        System.getProperties().list(System.out);
-//        String os = System.getProperty("os.name");
-
-        Kernel32 lib = (Kernel32) Native.load("kernel32", Kernel32.class);
-//        lib.Beep(523, 100);
-//        lib.Sleep(900);
-//        lib.Beep(587, 100);
+        String os = System.getProperty("os.name");
+//        System.out.println(os);
+        if (!os.contains("Windows")) {
+            System.out.println("\nOnly works on Windows.\n");
+            return;
+        }
 
         Scanner scanner = new Scanner(System.in);
+
+        Kernel32 lib = (Kernel32) Native.load("kernel32", Kernel32.class);
         printInfoText();
         while (true) {
             System.out.print(">");
@@ -90,7 +90,7 @@ public class Main {
                     lib.Beep(note.getFreq(), DURATION);
                 }
             } catch (RuntimeException e) {
-                System.out.println(e.toString());
+                System.out.println(e);
             }
         }
     }
